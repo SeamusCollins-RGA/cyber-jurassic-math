@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Cyber Jurassic Math</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="eight-bit">
+    <header>
+        <h1>CYBER JURASSIC MATH</h1>
+    </header>
+    <main>
+        <canvas id="game-canvas" width="800" height="400"></canvas>
+        <div id="game-controls">
+            <button id="start-button">Start Game</button>
+            <div id="instructions">
+                <p><strong>HOW TO PLAY:</strong></p>
+                <p>🎯 Solve math problems to make the dino jump</p>
+                <p>⌨️ Type answer and press ENTER or click JUMP</p>
+                <p>🚀 Space bar also jumps if no answer entered</p>
+                <p>⏸️ Press P to pause</p>
+            </div>
+            <div id="game-problem-container">
+                <p id="game-problem"></p>
+                <input type="number" id="game-answer" placeholder="???">
+                <button id="game-submit">JUMP!</button>
+            </div>
+        </div>
+        <div id="feedback"></div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Cyber Jurassic Math</p>
+    </footer>
+    <audio id="correct-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGYdBSuY3+7JfSsFJHfO7N2QQAoVXrXp66hVFApGnt/yvGYdBSuY3O7JfS0FJnfH8N2QQAoUXLPj56hTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQ2QLisjCJBhQ6+dxnCE8oB48aFBhYd3l9PL4AAAAAaO1GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="audio/wav">
+    </audio>
+    <audio id="incorrect-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm01IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGYdBSuY3+7JfSsFJHfO7N2QQAoVXrXp66hVFApGnt/yvGYdBSuY3O7JfS0FJnfH8N2QQAoUXLPj56hTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFAwOlt/ytmMcBzCN1/TjhT0IJWq08N2QQwoUXrPj56ZTFA=" type="audio/wav">
+    </audio>
+    <script src="script.js"></script>
+</body>
+</html>

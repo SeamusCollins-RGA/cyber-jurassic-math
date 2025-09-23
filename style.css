@@ -1,0 +1,721 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    background:
+        radial-gradient(ellipse at top, rgba(0, 255, 170, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom, rgba(255, 68, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #001122 0%, #003344 25%, #002233 50%, #001122 75%, #000f1a 100%);
+    background-attachment: fixed;
+    color: #00ffaa;
+    text-align: center;
+    text-shadow: 0 0 5px #00ffaa, 0 0 10px #00ffaa, 0 0 15px #00cc88, 0 0 20px #00cc88;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+    overflow-x: hidden;
+    animation: backgroundPulse 8s ease-in-out infinite alternate;
+    /* Mobile optimization */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes backgroundPulse {
+    from { filter: hue-rotate(0deg) brightness(1); }
+    to { filter: hue-rotate(10deg) brightness(1.1); }
+}
+
+/* Enhanced cyber grid overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(0, 255, 170, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 170, 0.15) 1px, transparent 1px),
+        radial-gradient(circle at 25% 25%, rgba(0, 255, 170, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 68, 0, 0.05) 0%, transparent 50%);
+    background-size: 25px 25px, 25px 25px, 200px 200px, 300px 300px;
+    animation: gridMove 20s linear infinite, gridPulse 4s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes gridMove {
+    from { background-position: 0 0, 0 0, 0 0, 0 0; }
+    to { background-position: 25px 25px, 25px 25px, 50px 50px, -50px -50px; }
+}
+
+@keyframes gridPulse {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+/* Floating energy particles */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(0, 255, 170, 0.8), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(0, 204, 136, 0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(0, 255, 170, 0.9), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(0, 170, 102, 0.7), transparent),
+        radial-gradient(2px 2px at 160px 30px, rgba(0, 255, 170, 0.8), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: particleFloat 15s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes particleFloat {
+    from { transform: translateX(-200px); }
+    to { transform: translateX(100vw); }
+}
+
+header {
+    background:
+        linear-gradient(135deg, rgba(0, 255, 170, 0.1) 0%, transparent 50%),
+        linear-gradient(45deg, #002233, #004455);
+    color: #00ffaa;
+    padding: 1.5em;
+    border-bottom: 3px solid #00ffaa;
+    box-shadow:
+        0 0 30px rgba(0, 255, 170, 0.4),
+        inset 0 -20px 40px rgba(0, 255, 170, 0.05);
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+/* Animated header border */
+header::before {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        #00ffaa 20%,
+        #00ccff 40%,
+        #00ffaa 60%,
+        #00cc88 80%,
+        transparent 100%);
+    animation: borderFlow 3s ease-in-out infinite;
+}
+
+@keyframes borderFlow {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}
+
+h1 {
+    font-size: 2.8em;
+    color: #00ffaa;
+    text-shadow:
+        0 0 10px #00ffaa,
+        0 0 20px #00ffaa,
+        0 0 30px #00cc88,
+        0 0 40px #00cc88,
+        3px 3px 0px #004444,
+        -1px -1px 0px #006666;
+    letter-spacing: 3px;
+    margin: 0;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+    transform: perspective(500px) rotateX(10deg);
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 0 0 10px #00ffaa, 0 0 20px #00ffaa, 0 0 30px #00cc88, 0 0 40px #00cc88, 3px 3px 0px #004444, -1px -1px 0px #006666;
+        transform: perspective(500px) rotateX(10deg) scale(1);
+    }
+    to {
+        text-shadow: 0 0 20px #00ffaa, 0 0 40px #00ffaa, 0 0 60px #00cc88, 0 0 80px #00cc88, 3px 3px 0px #004444, -1px -1px 0px #006666;
+        transform: perspective(500px) rotateX(10deg) scale(1.02);
+    }
+}
+
+main {
+    padding: 2em;
+    position: relative;
+}
+
+#game-canvas {
+    background:
+        radial-gradient(ellipse at center top, rgba(0, 255, 170, 0.05) 0%, transparent 60%),
+        linear-gradient(180deg, #0a1a2a 0%, #051015 100%);
+    border: 3px solid #00ffaa;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    box-shadow:
+        0 0 40px rgba(0, 255, 170, 0.6),
+        inset 0 0 40px rgba(0, 255, 170, 0.1),
+        inset 0 0 80px rgba(0, 34, 68, 0.3);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    animation: canvasPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes canvasPulse {
+    from {
+        box-shadow: 0 0 40px rgba(0, 255, 170, 0.6), inset 0 0 40px rgba(0, 255, 170, 0.1), inset 0 0 80px rgba(0, 34, 68, 0.3);
+        filter: brightness(1);
+    }
+    to {
+        box-shadow: 0 0 60px rgba(0, 255, 170, 0.8), inset 0 0 60px rgba(0, 255, 170, 0.15), inset 0 0 100px rgba(0, 34, 68, 0.4);
+        filter: brightness(1.05);
+    }
+}
+
+/* Holographic effect on canvas */
+#game-canvas::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 20%,
+        rgba(0, 255, 170, 0.2) 40%,
+        rgba(255, 255, 255, 0.1) 60%,
+        transparent 100%);
+    animation: hologramSweep 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes hologramSweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(300%); }
+}
+
+#game-controls {
+    margin-top: 1.5em;
+    position: relative;
+}
+
+#start-button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.3em;
+    padding: 1em 2em;
+    background:
+        linear-gradient(135deg, rgba(0, 255, 170, 0.1) 0%, transparent 100%),
+        linear-gradient(45deg, #00aa66, #00cc88);
+    color: #001100;
+    border: 2px solid #00ffaa;
+    cursor: pointer;
+    margin-bottom: 1.5em;
+    border-radius: 8px;
+    text-shadow: 0 0 10px #00ffaa;
+    box-shadow:
+        0 0 20px rgba(0, 255, 170, 0.6),
+        inset 0 0 20px rgba(255, 255, 255, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    transform: perspective(500px) rotateX(5deg);
+}
+
+/* Button energy flow effect */
+#start-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%);
+    animation: energyFlow 2s ease-in-out infinite;
+}
+
+@keyframes energyFlow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+}
+
+#start-button:hover {
+    background:
+        linear-gradient(135deg, rgba(0, 255, 170, 0.2) 0%, transparent 100%),
+        linear-gradient(45deg, #00cc88, #00ffaa);
+    box-shadow:
+        0 0 40px rgba(0, 255, 170, 0.9),
+        inset 0 0 40px rgba(255, 255, 255, 0.2),
+        inset 0 4px 8px rgba(255, 255, 255, 0.3);
+    transform: perspective(500px) rotateX(5deg) translateY(-3px) scale(1.05);
+    text-shadow: 0 0 15px #00ffaa, 0 0 25px #00ffaa;
+}
+
+#start-button:active {
+    transform: perspective(500px) rotateX(5deg) translateY(0) scale(0.98);
+    box-shadow:
+        0 0 20px rgba(0, 255, 170, 0.7),
+        inset 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+#instructions {
+    background: rgba(0, 34, 68, 0.8);
+    border: 2px solid rgba(0, 255, 170, 0.5);
+    border-radius: 10px;
+    padding: 1.5em;
+    margin: 1em auto;
+    max-width: 500px;
+    box-shadow:
+        inset 0 0 20px rgba(0, 255, 170, 0.1),
+        0 0 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+#instructions p {
+    margin: 0.5em 0;
+    font-size: 0.8em;
+    line-height: 1.4;
+    color: #00ddaa;
+    text-shadow: 0 0 5px #00ddaa;
+}
+
+#instructions strong {
+    color: #00ffaa;
+    font-size: 1.1em;
+    text-shadow: 0 0 10px #00ffaa;
+}
+
+#game-problem-container {
+    display: none;
+    margin-top: 1.5em;
+    background: rgba(0, 17, 34, 0.6);
+    border-radius: 15px;
+    padding: 2em;
+    box-shadow:
+        inset 0 0 30px rgba(0, 255, 170, 0.1),
+        0 0 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 170, 0.3);
+}
+
+#game-problem {
+    font-size: 2.2em;
+    color: #00ffaa;
+    text-shadow:
+        0 0 15px #00ffaa,
+        0 0 30px #00cc88;
+    margin-bottom: 1.5em;
+    animation: problemPulse 2s ease-in-out infinite alternate;
+    transform: perspective(300px) rotateY(-2deg);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5em;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 255, 170, 0.5);
+}
+
+@keyframes problemPulse {
+    from {
+        text-shadow: 0 0 15px #00ffaa, 0 0 30px #00cc88;
+        transform: perspective(300px) rotateY(-2deg) scale(1);
+    }
+    to {
+        text-shadow: 0 0 25px #00ffaa, 0 0 50px #00cc88;
+        transform: perspective(300px) rotateY(-2deg) scale(1.05);
+    }
+}
+
+#game-answer {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.3em;
+    padding: 0.8em;
+    width: 180px;
+    background:
+        linear-gradient(135deg, rgba(0, 255, 170, 0.05) 0%, transparent 100%),
+        linear-gradient(135deg, #001a1a, #002222);
+    border: 2px solid #00ffaa;
+    color: #00ffaa;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow:
+        0 0 20px rgba(0, 255, 170, 0.4),
+        inset 0 0 20px rgba(0, 255, 170, 0.1),
+        inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px #00ffaa;
+}
+
+#game-answer:focus {
+    outline: none;
+    border-color: #00ffcc;
+    box-shadow:
+        0 0 30px rgba(0, 255, 204, 0.8),
+        inset 0 0 30px rgba(0, 255, 170, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    transform: scale(1.05);
+    background:
+        linear-gradient(135deg, rgba(0, 255, 170, 0.1) 0%, transparent 100%),
+        linear-gradient(135deg, #002222, #003333);
+}
+
+#game-submit {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2em;
+    padding: 0.8em 1.5em;
+    background:
+        linear-gradient(135deg, rgba(255, 170, 68, 0.1) 0%, transparent 100%),
+        linear-gradient(45deg, #ff6600, #ff8833);
+    color: #220000;
+    border: 2px solid #ffaa44;
+    cursor: pointer;
+    margin-left: 1.5em;
+    border-radius: 8px;
+    text-shadow: 0 0 10px #ffaa44;
+    box-shadow:
+        0 0 20px rgba(255, 170, 68, 0.6),
+        inset 0 0 20px rgba(255, 255, 255, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: jumpButtonGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes jumpButtonGlow {
+    from {
+        box-shadow: 0 0 20px rgba(255, 170, 68, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+        filter: brightness(1);
+    }
+    to {
+        box-shadow: 0 0 40px rgba(255, 170, 68, 0.9), inset 0 0 40px rgba(255, 255, 255, 0.15), inset 0 4px 8px rgba(255, 255, 255, 0.3);
+        filter: brightness(1.1);
+    }
+}
+
+#game-submit:hover {
+    background:
+        linear-gradient(135deg, rgba(255, 170, 68, 0.2) 0%, transparent 100%),
+        linear-gradient(45deg, #ff8833, #ffaa44);
+    box-shadow:
+        0 0 40px rgba(255, 170, 68, 0.9),
+        inset 0 0 40px rgba(255, 255, 255, 0.2),
+        inset 0 4px 8px rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px) scale(1.05);
+    text-shadow: 0 0 15px #ffaa44, 0 0 25px #ffaa44;
+}
+
+#feedback {
+    font-size: 1.3em;
+    margin-top: 1.5em;
+    text-shadow:
+        0 0 15px currentColor,
+        0 0 30px currentColor;
+    animation: feedbackGlow 1s ease-in-out infinite alternate;
+    min-height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes feedbackGlow {
+    from { transform: scale(1); }
+    to { transform: scale(1.02); }
+}
+
+footer {
+    background:
+        linear-gradient(135deg, rgba(0, 255, 170, 0.05) 0%, transparent 50%),
+        linear-gradient(45deg, #002233, #004455);
+    color: #00ffaa;
+    padding: 1.5em;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    border-top: 3px solid #00ffaa;
+    box-shadow:
+        0 0 30px rgba(0, 255, 170, 0.4),
+        inset 0 20px 40px rgba(0, 255, 170, 0.05);
+    margin-top: 3em;
+    backdrop-filter: blur(10px);
+}
+
+/* Enhanced mobile responsiveness with critical touch improvements */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8em;
+        letter-spacing: 1px;
+    }
+
+    /* Critical: Larger touch targets for mobile */
+    #start-button, #game-submit {
+        font-size: 1.1em;
+        padding: 1.2em 2em; /* Increased from 0.8em 1.5em */
+        margin: 0.8em;
+        min-height: 56px; /* Apple/Google recommended minimum */
+        min-width: 120px;
+        touch-action: manipulation;
+    }
+
+    #game-answer {
+        font-size: 1.4em;
+        width: 200px; /* Increased from 180px */
+        padding: 1.2em; /* Increased from 1em */
+        min-height: 56px;
+        touch-action: manipulation;
+        /* Prevent iOS zoom on focus */
+        transform-origin: center;
+    }
+
+    main {
+        padding: 1em; /* Increased from 0.5em */
+        /* Safe area for notched devices */
+        padding-top: max(1em, env(safe-area-inset-top));
+        padding-bottom: max(1em, env(safe-area-inset-bottom));
+        padding-left: max(1em, env(safe-area-inset-left));
+        padding-right: max(1em, env(safe-area-inset-right));
+    }
+
+    #game-problem {
+        font-size: 2.2em; /* Increased from 1.8em for readability */
+        padding: 1em; /* Increased from 0.8em */
+        /* Better contrast on mobile */
+        background: rgba(0, 0, 0, 0.9);
+        border: 3px solid rgba(0, 255, 170, 0.8);
+    }
+
+    #game-problem-container {
+        padding: 1.5em; /* Increased from 1em */
+        margin-top: 1em;
+        /* Handle virtual keyboard */
+        transition: margin-bottom 0.3s ease;
+    }
+
+    /* Virtual keyboard handling */
+    .keyboard-open #game-problem-container {
+        margin-bottom: 20px;
+    }
+
+    #instructions {
+        padding: 1.2em; /* Increased from 1em */
+        margin: 0.8em; /* Increased from 0.5em */
+        font-size: 0.85em;
+    }
+
+    #instructions p {
+        font-size: 1em; /* Increased from 0.9em */
+        line-height: 1.8; /* Increased from 1.6 */
+    }
+
+    #game-canvas {
+        touch-action: manipulation;
+        /* Ensure canvas is properly sized on mobile */
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Reduce performance-heavy animations on mobile */
+    body::before, body::after {
+        animation-duration: 30s;
+    }
+
+    /* Simplified shadows for better mobile performance */
+    h1, #game-problem {
+        text-shadow: 0 0 10px currentColor;
+    }
+
+    /* Mobile-specific feedback styling */
+    #feedback {
+        font-size: 1.1em;
+        padding: 1em;
+        margin: 1em 0.5em;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 8px;
+        border: 2px solid currentColor;
+        min-height: 3em;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    #game-problem {
+        font-size: 1.8em; /* Keep readable, not too small */
+        padding: 0.8em;
+    }
+
+    #game-answer {
+        width: 180px; /* Keep wide enough for touch */
+        font-size: 1.3em; /* Keep readable */
+        padding: 1em;
+        margin: 0.5em;
+    }
+
+    #start-button, #game-submit {
+        font-size: 1em;
+        padding: 1em 1.5em; /* Still maintain good touch target */
+        margin: 0.5em;
+        min-width: 100px;
+    }
+
+    main {
+        padding: 0.8em;
+    }
+
+    #game-controls {
+        margin-top: 1em;
+    }
+
+    /* Stack buttons vertically on very small screens */
+    #game-problem-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #game-submit {
+        margin-left: 0; /* Remove left margin for stacked layout */
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    #game-canvas {
+        max-height: 50vh;
+    }
+
+    #game-problem-container {
+        padding: 1em;
+    }
+
+    #game-problem {
+        font-size: 1.8em;
+        padding: 0.6em;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    main {
+        padding: 0.8em;
+    }
+
+    /* Horizontal layout for landscape */
+    #game-problem-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    #game-problem, #game-answer, #start-button, #game-submit {
+        border-width: 3px;
+    }
+
+    #feedback {
+        border: 3px solid currentColor;
+        background: rgba(0, 0, 0, 0.95);
+    }
+}
+
+/* Better touch targets for all interactive elements */
+@media (hover: none) and (pointer: coarse) {
+    button, input[type="button"], input[type="submit"], input[type="number"] {
+        min-height: 48px;
+        min-width: 48px;
+        padding: 12px 16px;
+    }
+
+    /* Larger pause button target area */
+    .pause-btn {
+        min-height: 60px;
+        min-width: 60px;
+        padding: 15px;
+    }
+}
+
+/* Loading animation for when game starts */
+@keyframes gameStart {
+    0% { opacity: 0; transform: scale(0.8) rotateY(45deg); }
+    100% { opacity: 1; transform: scale(1) rotateY(0deg); }
+}
+
+.game-started {
+    animation: gameStart 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Mobile-specific canvas improvements */
+@media (max-width: 768px) {
+    #game-canvas {
+        /* Improve canvas rendering on mobile */
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        /* Prevent context menu on long press */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Improve performance by reducing complex backgrounds on mobile */
+    body {
+        background: linear-gradient(135deg, #001122 0%, #003344 50%, #001122 100%);
+    }
+
+    /* Disable background animations on very small devices */
+    body::before {
+        animation-play-state: paused;
+    }
+
+    body::after {
+        display: none; /* Hide floating particles on mobile for performance */
+    }
+}
+
+/* Critical: Viewport meta handling for mobile */
+@viewport {
+    width: device-width;
+    initial-scale: 1;
+    maximum-scale: 1;
+    user-scalable: no;
+}
+
+/* PWA-style mobile app feel */
+@media (display-mode: standalone) {
+    body {
+        -webkit-app-region: no-drag;
+    }
+
+    main {
+        padding-top: max(1em, env(safe-area-inset-top) + 10px);
+    }
+}
