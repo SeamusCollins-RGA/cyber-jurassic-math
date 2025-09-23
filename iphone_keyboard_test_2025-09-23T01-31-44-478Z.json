@@ -1,0 +1,567 @@
+{
+  "results": {
+    "totalSessions": 12,
+    "successRate": 0,
+    "averageUsabilityScore": 0,
+    "keyboardIssues": {
+      "cannotSeeGame": 6,
+      "cannotReachInput": 0,
+      "cannotSeeInput": 12,
+      "cannotTapSubmit": 12,
+      "gameObscured": 12,
+      "scrollingRequired": 12,
+      "orientationProblems": 3,
+      "safariUrlBar": 6
+    },
+    "deviceResults": {
+      "iPhone SE (2020)": {
+        "sessions": 3,
+        "successRate": 0,
+        "averageScore": 0,
+        "averageTime": 30
+      },
+      "iPhone 12/13": {
+        "sessions": 3,
+        "successRate": 0,
+        "averageScore": 0,
+        "averageTime": 44
+      },
+      "iPhone 12 Pro Max": {
+        "sessions": 3,
+        "successRate": 0,
+        "averageScore": 0,
+        "averageTime": 44
+      },
+      "iPhone 12 Landscape": {
+        "sessions": 3,
+        "successRate": 0,
+        "averageScore": 0,
+        "averageTime": 38
+      }
+    },
+    "criticalIssues": 21
+  },
+  "recommendations": [
+    {
+      "priority": "CRITICAL",
+      "category": "Layout",
+      "issue": "Low iPhone keyboard success rate: 0.0%",
+      "solution": "Implement keyboard-aware responsive design",
+      "implementation": [
+        "Detect virtual keyboard open/close events",
+        "Reduce canvas height when keyboard is visible",
+        "Move critical UI elements above keyboard",
+        "Add smooth scrolling to keep input visible"
+      ],
+      "cssCode": "\n/* Keyboard-aware layout */\n.keyboard-open #game-canvas {\n    height: 200px !important; /* Reduced from 400px */\n    max-height: 30vh;\n}\n\n.keyboard-open #game-problem-container {\n    position: fixed;\n    bottom: 250px; /* Above keyboard */\n    left: 50%;\n    transform: translateX(-50%);\n    width: 90%;\n    z-index: 1000;\n}",
+      "jsCode": "\n// Enhanced keyboard detection\nfunction handleKeyboardVisibility() {\n    const initialHeight = window.innerHeight;\n\n    window.addEventListener('resize', () => {\n        const currentHeight = window.innerHeight;\n        const heightDiff = initialHeight - currentHeight;\n\n        if (heightDiff > 150) { // Keyboard likely open\n            document.body.classList.add('keyboard-open');\n            // Resize game canvas\n            canvas.style.height = '200px';\n        } else {\n            document.body.classList.remove('keyboard-open');\n            // Restore canvas size\n            canvas.style.height = '400px';\n        }\n    });\n}"
+    },
+    {
+      "priority": "CRITICAL",
+      "category": "Input Visibility",
+      "issue": "Input field hidden by keyboard",
+      "solution": "Position input field in safe area above keyboard",
+      "implementation": [
+        "Use position: fixed for input container",
+        "Calculate safe area dynamically",
+        "Ensure input stays visible and accessible"
+      ]
+    },
+    {
+      "priority": "HIGH",
+      "category": "Game Visibility",
+      "issue": "Game canvas obscured by keyboard",
+      "solution": "Implement adaptive canvas sizing",
+      "implementation": [
+        "Scale canvas to fit available viewport",
+        "Maintain aspect ratio",
+        "Ensure game remains playable at smaller size"
+      ]
+    }
+  ],
+  "rawData": [
+    {
+      "id": 1,
+      "device": "iPhone SE (2020)",
+      "orientation": "portrait",
+      "startTime": 1758591104476,
+      "keyboardInteractions": 1,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 431px, Need: 600px"
+        },
+        {
+          "type": "math_problem_hidden",
+          "severity": "CRITICAL",
+          "description": "Math problem is below the visible area when keyboard is open"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 30000
+    },
+    {
+      "id": 2,
+      "device": "iPhone SE (2020)",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 1,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 431px, Need: 600px"
+        },
+        {
+          "type": "math_problem_hidden",
+          "severity": "CRITICAL",
+          "description": "Math problem is below the visible area when keyboard is open"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 30000
+    },
+    {
+      "id": 3,
+      "device": "iPhone SE (2020)",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 1,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 431px, Need: 600px"
+        },
+        {
+          "type": "math_problem_hidden",
+          "severity": "CRITICAL",
+          "description": "Math problem is below the visible area when keyboard is open"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "safari_url_bar_interference",
+          "severity": "MEDIUM",
+          "description": "Safari URL bar appears/disappears during gameplay, causing layout shifts"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 30000
+    },
+    {
+      "id": 4,
+      "device": "iPhone 12/13",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 2,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 472px, Need: 600px"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "safari_url_bar_interference",
+          "severity": "MEDIUM",
+          "description": "Safari URL bar appears/disappears during gameplay, causing layout shifts"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 44000
+    },
+    {
+      "id": 5,
+      "device": "iPhone 12/13",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 2,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 472px, Need: 600px"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 44000
+    },
+    {
+      "id": 6,
+      "device": "iPhone 12/13",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 2,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 472px, Need: 600px"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "safari_url_bar_interference",
+          "severity": "MEDIUM",
+          "description": "Safari URL bar appears/disappears during gameplay, causing layout shifts"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 44000
+    },
+    {
+      "id": 7,
+      "device": "iPhone 12 Pro Max",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 2,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 499px, Need: 600px"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 44000
+    },
+    {
+      "id": 8,
+      "device": "iPhone 12 Pro Max",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 2,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 499px, Need: 600px"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 44000
+    },
+    {
+      "id": 9,
+      "device": "iPhone 12 Pro Max",
+      "orientation": "portrait",
+      "startTime": 1758591104477,
+      "keyboardInteractions": 2,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 499px, Need: 600px"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "safari_url_bar_interference",
+          "severity": "MEDIUM",
+          "description": "Safari URL bar appears/disappears during gameplay, causing layout shifts"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 44000
+    },
+    {
+      "id": 10,
+      "device": "iPhone 12 Landscape",
+      "orientation": "landscape",
+      "startTime": 1758591104478,
+      "keyboardInteractions": 1,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 169px, Need: 600px"
+        },
+        {
+          "type": "math_problem_hidden",
+          "severity": "CRITICAL",
+          "description": "Math problem is below the visible area when keyboard is open"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "safari_url_bar_interference",
+          "severity": "MEDIUM",
+          "description": "Safari URL bar appears/disappears during gameplay, causing layout shifts"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        },
+        {
+          "type": "landscape_unusable",
+          "severity": "CRITICAL",
+          "description": "Landscape mode with keyboard leaves only 169px, making game unusable"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 38000
+    },
+    {
+      "id": 11,
+      "device": "iPhone 12 Landscape",
+      "orientation": "landscape",
+      "startTime": 1758591104478,
+      "keyboardInteractions": 1,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 169px, Need: 600px"
+        },
+        {
+          "type": "math_problem_hidden",
+          "severity": "CRITICAL",
+          "description": "Math problem is below the visible area when keyboard is open"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        },
+        {
+          "type": "landscape_unusable",
+          "severity": "CRITICAL",
+          "description": "Landscape mode with keyboard leaves only 169px, making game unusable"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 38000
+    },
+    {
+      "id": 12,
+      "device": "iPhone 12 Landscape",
+      "orientation": "landscape",
+      "startTime": 1758591104478,
+      "keyboardInteractions": 1,
+      "usabilityIssues": [
+        {
+          "type": "game_obscured_by_keyboard",
+          "severity": "HIGH",
+          "description": "Game canvas partially/fully hidden by keyboard. Available: 169px, Need: 600px"
+        },
+        {
+          "type": "math_problem_hidden",
+          "severity": "CRITICAL",
+          "description": "Math problem is below the visible area when keyboard is open"
+        },
+        {
+          "type": "input_field_obscured",
+          "severity": "CRITICAL",
+          "description": "Input field is hidden behind keyboard"
+        },
+        {
+          "type": "submit_button_unreachable",
+          "severity": "HIGH",
+          "description": "Submit button is hidden or requires scrolling"
+        },
+        {
+          "type": "safari_url_bar_interference",
+          "severity": "MEDIUM",
+          "description": "Safari URL bar appears/disappears during gameplay, causing layout shifts"
+        },
+        {
+          "type": "scrolling_required",
+          "severity": "HIGH",
+          "description": "User must scroll to access game elements, breaking game flow"
+        },
+        {
+          "type": "landscape_unusable",
+          "severity": "CRITICAL",
+          "description": "Landscape mode with keyboard leaves only 169px, making game unusable"
+        }
+      ],
+      "successful": false,
+      "quitReason": "keyboard_usability_issues",
+      "keyboardUsabilityScore": 0,
+      "problemsSolved": 0,
+      "timeSpent": 38000
+    }
+  ]
+}

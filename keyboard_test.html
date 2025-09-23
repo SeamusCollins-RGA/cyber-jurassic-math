@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iPhone Keyboard Test - Math Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #001122, #003344);
+            color: #00ffaa;
+            min-height: 100vh;
+        }
+
+        #test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 2000;
+        }
+
+        #game-canvas {
+            background: #0a1a2a;
+            border: 2px solid #00ffaa;
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        #game-problem-container {
+            background: rgba(0, 17, 34, 0.6);
+            border: 1px solid #00ffaa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #game-problem {
+            font-size: 2em;
+            color: #00ffaa;
+            margin-bottom: 15px;
+        }
+
+        #game-answer {
+            font-size: 1.5em;
+            padding: 12px;
+            width: 150px;
+            background: #002222;
+            border: 2px solid #00ffaa;
+            color: #00ffaa;
+            text-align: center;
+            border-radius: 8px;
+            margin: 10px;
+        }
+
+        #game-submit {
+            font-size: 1.3em;
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #ff6600, #ff8833);
+            color: #220000;
+            border: 2px solid #ffaa44;
+            border-radius: 8px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+
+        /* CRITICAL iPhone Keyboard Fixes */
+        .keyboard-open {
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden !important;
+        }
+
+        .keyboard-open #game-canvas {
+            height: 150px !important;
+            max-height: 20vh !important;
+        }
+
+        .keyboard-open #game-problem-container {
+            position: fixed !important;
+            bottom: 30% !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 90% !important;
+            max-width: 350px !important;
+            z-index: 1000 !important;
+            background: rgba(0, 17, 34, 0.95) !important;
+            border: 3px solid #00ffaa !important;
+            border-radius: 10px !important;
+            box-shadow: 0 0 20px rgba(0, 255, 170, 0.6) !important;
+        }
+
+        .keyboard-open #feedback {
+            position: fixed !important;
+            top: 30px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            z-index: 999 !important;
+            width: 80% !important;
+            max-width: 300px !important;
+        }
+
+        /* iPhone landscape */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .keyboard-open #game-canvas {
+                height: 100px !important;
+                max-height: 15vh !important;
+            }
+            .keyboard-open #game-problem-container {
+                bottom: 35% !important;
+                padding: 15px !important;
+            }
+        }
+
+        .status {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 2000;
+        }
+
+        .status.keyboard-detected {
+            background: rgba(0, 255, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="test-info">
+        iPhone Keyboard Test<br>
+        Screen: <span id="screen-size">-</span><br>
+        Viewport: <span id="viewport-size">-</span><br>
+        Keyboard: <span id="keyboard-status">Closed</span>
+    </div>
+
+    <h1>🦖 Math Game Keyboard Test</h1>
+
+    <canvas id="game-canvas" width="800" height="300"></canvas>
+
+    <div id="game-problem-container">
+        <div id="game-problem">15 + 7 = ?</div>
+        <div>
+            <input type="number" id="game-answer" placeholder="Answer">
+            <button id="game-submit">JUMP!</button>
+        </div>
+    </div>
+
+    <div id="feedback">Touch the input field to test keyboard behavior on iPhone!</div>
+
+    <div class="status" id="status">No keyboard detected</div>
+
+    <script>
+        let initialViewportHeight = window.innerHeight;
+        let keyboardOpen = false;
+
+        function updateInfo() {
+            document.getElementById('screen-size').textContent = `${screen.width}×${screen.height}`;
+            document.getElementById('viewport-size').textContent = `${window.innerWidth}×${window.innerHeight}`;
+        }
+
+        function detectKeyboard() {
+            const currentHeight = window.innerHeight;
+            const heightDifference = initialViewportHeight - currentHeight;
+            const keyboardThreshold = 150;
+
+            console.log(`Viewport change: ${initialViewportHeight} → ${currentHeight}, diff: ${heightDifference}`);
+
+            if (heightDifference > keyboardThreshold && !keyboardOpen) {
+                keyboardOpen = true;
+                document.body.classList.add('keyboard-open');
+                document.getElementById('keyboard-status').textContent = 'Open';
+                document.getElementById('status').textContent = `Keyboard detected! Height diff: ${heightDifference}px`;
+                document.getElementById('status').classList.add('keyboard-detected');
+
+                console.log('🎯 KEYBOARD OPENED - Applied fixes');
+            } else if (heightDifference <= keyboardThreshold && keyboardOpen) {
+                keyboardOpen = false;
+                document.body.classList.remove('keyboard-open');
+                document.getElementById('keyboard-status').textContent = 'Closed';
+                document.getElementById('status').textContent = 'No keyboard detected';
+                document.getElementById('status').classList.remove('keyboard-detected');
+
+                console.log('🎯 KEYBOARD CLOSED - Restored layout');
+            }
+
+            updateInfo();
+        }
+
+        // Event listeners
+        window.addEventListener('resize', detectKeyboard);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                initialViewportHeight = window.innerHeight;
+                detectKeyboard();
+            }, 500);
+        });
+
+        // Input events
+        document.getElementById('game-answer').addEventListener('focus', () => {
+            console.log('Input focused - checking for keyboard...');
+            setTimeout(detectKeyboard, 300);
+            setTimeout(detectKeyboard, 600);
+        });
+
+        document.getElementById('game-answer').addEventListener('blur', () => {
+            console.log('Input blurred - checking for keyboard...');
+            setTimeout(detectKeyboard, 300);
+        });
+
+        // Initial setup
+        updateInfo();
+        console.log('🧪 iPhone Keyboard Test Ready');
+        console.log(`Initial viewport: ${initialViewportHeight}px`);
+
+        // Test the math problem
+        document.getElementById('game-submit').addEventListener('click', () => {
+            const answer = document.getElementById('game-answer').value;
+            const feedback = document.getElementById('feedback');
+
+            if (answer === '22') {
+                feedback.textContent = '✅ Correct! The fixes are working!';
+                feedback.style.color = '#00ff00';
+            } else {
+                feedback.textContent = `❌ Try again! Answer: ${answer || 'none'}`;
+                feedback.style.color = '#ff0000';
+            }
+        });
+
+        // Draw simple game elements on canvas
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw simple dino
+            ctx.fillStyle = '#00ffaa';
+            ctx.fillRect(50, canvas.height - 80, 40, 60);
+
+            // Draw ground
+            ctx.fillStyle = '#00cc88';
+            ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+
+            // Draw simple obstacle
+            ctx.fillStyle = '#ff4444';
+            ctx.fillRect(canvas.width - 100, canvas.height - 70, 20, 50);
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>

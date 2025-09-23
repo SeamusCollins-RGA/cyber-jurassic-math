@@ -1,5 +1,114 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+/* ⚠️ CRITICAL iPhone Keyboard Usability Fixes */
+.keyboard-open {
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+.keyboard-open #game-canvas {
+    height: 180px !important;
+    max-height: 25vh !important;
+    width: 100% !important;
+}
+
+.keyboard-open #game-problem-container {
+    position: fixed !important;
+    bottom: 280px !important; /* Above iPhone keyboard */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 350px !important;
+    z-index: 1000 !important;
+    background: rgba(0, 17, 34, 0.95) !important;
+    border: 3px solid #00ffaa !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 170, 0.6) !important;
+    padding: 20px !important;
+}
+
+.keyboard-open #game-problem {
+    font-size: 1.6em !important;
+    margin-bottom: 15px !important;
+    color: #00ffaa !important;
+    text-align: center !important;
+}
+
+.keyboard-open #game-answer {
+    width: 140px !important;
+    font-size: 1.4em !important;
+    padding: 15px !important;
+    margin: 10px !important;
+    background: rgba(0, 26, 26, 0.9) !important;
+    border: 2px solid #00ffaa !important;
+    color: #00ffaa !important;
+    text-align: center !important;
+}
+
+.keyboard-open #game-submit {
+    font-size: 1.2em !important;
+    padding: 15px 25px !important;
+    margin: 10px !important;
+    background: linear-gradient(45deg, #ff6600, #ff8833) !important;
+    border: 2px solid #ffaa44 !important;
+    color: #220000 !important;
+    border-radius: 8px !important;
+}
+
+.keyboard-open #feedback {
+    position: fixed !important;
+    top: 40px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 999 !important;
+    width: 80% !important;
+    max-width: 300px !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    border: 2px solid currentColor !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+}
+
+/* iPhone specific keyboard heights */
+@supports (-webkit-touch-callout: none) {
+    .keyboard-open #game-problem-container {
+        bottom: 30% !important; /* Percentage works better on iOS */
+    }
+}
+
+/* iPhone Landscape keyboard fix */
+@media (orientation: landscape) and (max-height: 500px) {
+    .keyboard-open #game-canvas {
+        height: 120px !important;
+        max-height: 20vh !important;
+    }
+
+    .keyboard-open #game-problem-container {
+        bottom: 35% !important;
+        padding: 15px !important;
+    }
+
+    .keyboard-open #game-problem {
+        font-size: 1.4em !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+/* Emergency fallback for very small screens */
+@media (max-height: 400px) {
+    .keyboard-open #game-canvas {
+        height: 100px !important;
+        max-height: 15vh !important;
+    }
+
+    .keyboard-open #game-problem-container {
+        bottom: 40% !important;
+        padding: 10px !important;
+    }
+}
+
 body {
     font-family: 'Press Start 2P', cursive;
     background:

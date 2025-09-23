@@ -1012,13 +1012,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Canvas responsiveness
+    // Enhanced canvas responsiveness for iPhone keyboard
     function resizeCanvas() {
         const container = canvas.parentElement;
         const containerWidth = container.clientWidth;
         const aspectRatio = 800 / 400;
 
-        if (containerWidth < 800) {
+        // Check if keyboard is open and adjust accordingly
+        if (keyboardOpen && isMobile) {
+            // iPhone keyboard mode: prioritize controls visibility
+            const maxHeight = Math.min(180, window.innerHeight * 0.25);
+            canvas.style.width = containerWidth + 'px';
+            canvas.style.height = maxHeight + 'px';
+        } else if (containerWidth < 800) {
             canvas.style.width = containerWidth + 'px';
             canvas.style.height = (containerWidth / aspectRatio) + 'px';
         } else {
@@ -1026,7 +1032,9 @@ document.addEventListener('DOMContentLoaded', () => {
             canvas.style.height = '400px';
         }
 
-        dino.groundY = canvas.height - 50;
+        // Adjust game physics for smaller canvas
+        const canvasHeight = parseInt(canvas.style.height) || 400;
+        dino.groundY = canvasHeight - 50;
         if (!gameRunning) {
             dino.y = dino.groundY;
         }
@@ -1043,19 +1051,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function detectKeyboard() {
         const currentHeight = window.innerHeight;
-        const threshold = viewportHeight * 0.75;
+        const heightDifference = viewportHeight - currentHeight;
+        const keyboardThreshold = 150; // Minimum height difference to consider keyboard open
 
-        if (currentHeight < threshold && !keyboardOpen) {
+        if (heightDifference > keyboardThreshold && !keyboardOpen) {
             keyboardOpen = true;
             document.body.classList.add('keyboard-open');
-            // Adjust game layout when keyboard opens
+
+            // Critical iPhone fix: Drastically reduce canvas size
             if (gameRunning) {
-                canvas.style.height = (canvas.offsetHeight * 0.6) + 'px';
+                canvas.style.height = '180px'; // Reduced from 400px
+                canvas.style.maxHeight = '25vh';
+
+                // Move game controls to fixed position above keyboard
+                const gameContainer = document.getElementById('game-problem-container');
+                if (gameContainer) {
+                    gameContainer.style.position = 'fixed';
+                    gameContainer.style.bottom = (heightDifference + 20) + 'px';
+                    gameContainer.style.left = '50%';
+                    gameContainer.style.transform = 'translateX(-50%)';
+                    gameContainer.style.width = '90%';
+                    gameContainer.style.zIndex = '1000';
+                    gameContainer.style.background = 'rgba(0, 17, 34, 0.95)';
+                    gameContainer.style.border = '2px solid #00ffaa';
+                }
             }
-        } else if (currentHeight >= threshold && keyboardOpen) {
+        } else if (heightDifference <= keyboardThreshold && keyboardOpen) {
             keyboardOpen = false;
             document.body.classList.remove('keyboard-open');
-            // Restore game layout
+
+            // Restore original layout
+            if (canvas) {
+                canvas.style.height = '';
+                canvas.style.maxHeight = '';
+            }
+
+            const gameContainer = document.getElementById('game-problem-container');
+            if (gameContainer) {
+                gameContainer.style.position = '';
+                gameContainer.style.bottom = '';
+                gameContainer.style.left = '';
+                gameContainer.style.transform = '';
+                gameContainer.style.width = '';
+                gameContainer.style.zIndex = '';
+                gameContainer.style.background = '';
+                gameContainer.style.border = '';
+            }
+
             resizeCanvas();
         }
     }
