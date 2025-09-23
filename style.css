@@ -15,6 +15,12 @@ body {
     position: relative;
     overflow-x: hidden;
     animation: backgroundPulse 8s ease-in-out infinite alternate;
+    /* Mobile optimization */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes backgroundPulse {
@@ -447,66 +453,210 @@ footer {
     backdrop-filter: blur(10px);
 }
 
-/* Enhanced mobile responsiveness */
+/* Enhanced mobile responsiveness with critical touch improvements */
 @media (max-width: 768px) {
     h1 {
         font-size: 1.8em;
         letter-spacing: 1px;
     }
 
+    /* Critical: Larger touch targets for mobile */
     #start-button, #game-submit {
         font-size: 1.1em;
-        padding: 0.8em 1.5em;
-        margin: 0.5em;
+        padding: 1.2em 2em; /* Increased from 0.8em 1.5em */
+        margin: 0.8em;
+        min-height: 56px; /* Apple/Google recommended minimum */
+        min-width: 120px;
+        touch-action: manipulation;
     }
 
     #game-answer {
         font-size: 1.4em;
-        width: 180px;
-        padding: 1em;
+        width: 200px; /* Increased from 180px */
+        padding: 1.2em; /* Increased from 1em */
+        min-height: 56px;
+        touch-action: manipulation;
+        /* Prevent iOS zoom on focus */
+        transform-origin: center;
     }
 
     main {
-        padding: 0.5em;
+        padding: 1em; /* Increased from 0.5em */
+        /* Safe area for notched devices */
+        padding-top: max(1em, env(safe-area-inset-top));
+        padding-bottom: max(1em, env(safe-area-inset-bottom));
+        padding-left: max(1em, env(safe-area-inset-left));
+        padding-right: max(1em, env(safe-area-inset-right));
     }
 
     #game-problem {
-        font-size: 1.8em;
+        font-size: 2.2em; /* Increased from 1.8em for readability */
+        padding: 1em; /* Increased from 0.8em */
+        /* Better contrast on mobile */
+        background: rgba(0, 0, 0, 0.9);
+        border: 3px solid rgba(0, 255, 170, 0.8);
+    }
+
+    #game-problem-container {
+        padding: 1.5em; /* Increased from 1em */
+        margin-top: 1em;
+        /* Handle virtual keyboard */
+        transition: margin-bottom 0.3s ease;
+    }
+
+    /* Virtual keyboard handling */
+    .keyboard-open #game-problem-container {
+        margin-bottom: 20px;
+    }
+
+    #instructions {
+        padding: 1.2em; /* Increased from 1em */
+        margin: 0.8em; /* Increased from 0.5em */
+        font-size: 0.85em;
+    }
+
+    #instructions p {
+        font-size: 1em; /* Increased from 0.9em */
+        line-height: 1.8; /* Increased from 1.6 */
+    }
+
+    #game-canvas {
+        touch-action: manipulation;
+        /* Ensure canvas is properly sized on mobile */
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Reduce performance-heavy animations on mobile */
+    body::before, body::after {
+        animation-duration: 30s;
+    }
+
+    /* Simplified shadows for better mobile performance */
+    h1, #game-problem {
+        text-shadow: 0 0 10px currentColor;
+    }
+
+    /* Mobile-specific feedback styling */
+    #feedback {
+        font-size: 1.1em;
+        padding: 1em;
+        margin: 1em 0.5em;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 8px;
+        border: 2px solid currentColor;
+        min-height: 3em;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    #game-problem {
+        font-size: 1.8em; /* Keep readable, not too small */
         padding: 0.8em;
+    }
+
+    #game-answer {
+        width: 180px; /* Keep wide enough for touch */
+        font-size: 1.3em; /* Keep readable */
+        padding: 1em;
+        margin: 0.5em;
+    }
+
+    #start-button, #game-submit {
+        font-size: 1em;
+        padding: 1em 1.5em; /* Still maintain good touch target */
+        margin: 0.5em;
+        min-width: 100px;
+    }
+
+    main {
+        padding: 0.8em;
+    }
+
+    #game-controls {
+        margin-top: 1em;
+    }
+
+    /* Stack buttons vertically on very small screens */
+    #game-problem-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #game-submit {
+        margin-left: 0; /* Remove left margin for stacked layout */
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    #game-canvas {
+        max-height: 50vh;
     }
 
     #game-problem-container {
         padding: 1em;
     }
 
-    #instructions {
-        padding: 1em;
-        margin: 0.5em;
+    #game-problem {
+        font-size: 1.8em;
+        padding: 0.6em;
     }
 
-    #instructions p {
-        font-size: 0.9em;
-        line-height: 1.6;
+    h1 {
+        font-size: 1.5em;
     }
 
-    canvas {
-        touch-action: none;
+    main {
+        padding: 0.8em;
+    }
+
+    /* Horizontal layout for landscape */
+    #game-problem-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
 
-@media (max-width: 480px) {
-    #game-problem {
-        font-size: 1.6em;
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    #game-problem, #game-answer, #start-button, #game-submit {
+        border-width: 3px;
     }
 
-    #game-answer {
-        width: 150px;
-        font-size: 1.2em;
+    #feedback {
+        border: 3px solid currentColor;
+        background: rgba(0, 0, 0, 0.95);
+    }
+}
+
+/* Better touch targets for all interactive elements */
+@media (hover: none) and (pointer: coarse) {
+    button, input[type="button"], input[type="submit"], input[type="number"] {
+        min-height: 48px;
+        min-width: 48px;
+        padding: 12px 16px;
     }
 
-    #start-button, #game-submit {
-        font-size: 1em;
-        padding: 0.7em 1.2em;
+    /* Larger pause button target area */
+    .pause-btn {
+        min-height: 60px;
+        min-width: 60px;
+        padding: 15px;
     }
 }
 
@@ -518,4 +668,54 @@ footer {
 
 .game-started {
     animation: gameStart 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Mobile-specific canvas improvements */
+@media (max-width: 768px) {
+    #game-canvas {
+        /* Improve canvas rendering on mobile */
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        /* Prevent context menu on long press */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Improve performance by reducing complex backgrounds on mobile */
+    body {
+        background: linear-gradient(135deg, #001122 0%, #003344 50%, #001122 100%);
+    }
+
+    /* Disable background animations on very small devices */
+    body::before {
+        animation-play-state: paused;
+    }
+
+    body::after {
+        display: none; /* Hide floating particles on mobile for performance */
+    }
+}
+
+/* Critical: Viewport meta handling for mobile */
+@viewport {
+    width: device-width;
+    initial-scale: 1;
+    maximum-scale: 1;
+    user-scalable: no;
+}
+
+/* PWA-style mobile app feel */
+@media (display-mode: standalone) {
+    body {
+        -webkit-app-region: no-drag;
+    }
+
+    main {
+        padding-top: max(1em, env(safe-area-inset-top) + 10px);
+    }
 }

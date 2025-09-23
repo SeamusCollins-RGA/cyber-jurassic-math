@@ -24,10 +24,30 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastFrameTime = 0;
     let obstacleSpeed = 3;
     let baseObstacleSpeed = 3;
+    let gameSpeedMultiplier = 1;
+    let gameSpeedSettings = {
+        'slow': { multiplier: 0.6, name: 'Slow (0.6x)' },
+        'normal': { multiplier: 1.0, name: 'Normal (1x)' },
+        'fast': { multiplier: 1.4, name: 'Fast (1.4x)' },
+        'turbo': { multiplier: 1.8, name: 'Turbo (1.8x)' }
+    };
+    let currentSpeedSetting = 'normal';
     let num1, num2, correctAnswer;
     let mathOperation = '+';
     let operations = ['+', '-', '*'];
     let maxNumber = 10;
+    let hintSystem = {
+        consecutiveWrong: 0,
+        showHint: false,
+        hintText: ''
+    };
+    let encouragementMessages = [
+        'Keep going! You can do this! 💪',
+        'Great effort! Try the next one! ✨',
+        'Learning by doing! You\'re improving! 🌟',
+        'Every mistake is progress! 📈',
+        'Focus and you\'ve got this! 🎯'
+    ];
     let screenShake = { x: 0, y: 0, intensity: 0 };
     let cameraOffset = { x: 0, y: 0 };
 
@@ -355,11 +375,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function generateProblem() {
-        num1 = Math.floor(Math.random() * maxNumber) + 1;
-        num2 = Math.floor(Math.random() * maxNumber) + 1;
+    function generateHint(n1, n2, operation, answer) {
+        switch (operation) {
+            case '+':
+                return `Try counting: ${n1} + ${n2} = ${n1}${n2 <= 5 ? ' + ' + '●'.repeat(n2) : '...'}`;
+            case '-':
+                return `Start with ${n1}, take away ${n2}`;
+            case '*':
+                return `${n1} groups of ${n2}, or ${n1} × ${n2}`;
+            default:
+                return 'Think step by step!';
+        }
+    }
 
-        mathOperation = operations[Math.floor(Math.random() * operations.length)];
+    function generateProblem() {
+        // Adaptive difficulty based on recent performance
+        let adaptiveMaxNumber = maxNumber;
+        if (hintSystem.consecutiveWrong >= 2) {
+            adaptiveMaxNumber = Math.max(5, maxNumber - 2); // Make easier
+        }
+
+        num1 = Math.floor(Math.random() * adaptiveMaxNumber) + 1;
+        num2 = Math.floor(Math.random() * adaptiveMaxNumber) + 1;
+
+        // Limit operations if struggling
+        let availableOps = operations;
+        if (hintSystem.consecutiveWrong >= 3) {
+            availableOps = ['+']; // Only addition when struggling
+        } else if (hintSystem.consecutiveWrong >= 2) {
+            availableOps = ['+', '-']; // No multiplication when having trouble
+        }
+
+        mathOperation = availableOps[Math.floor(Math.random() * availableOps.length)];
 
         switch (mathOperation) {
             case '+':
@@ -370,8 +417,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 correctAnswer = num1 - num2;
                 break;
             case '*':
-                num1 = Math.floor(Math.random() * Math.min(maxNumber/2, 5)) + 1;
-                num2 = Math.floor(Math.random() * Math.min(maxNumber/2, 5)) + 1;
+                num1 = Math.floor(Math.random() * Math.min(adaptiveMaxNumber/2, 5)) + 1;
+                num2 = Math.floor(Math.random() * Math.min(adaptiveMaxNumber/2, 5)) + 1;
                 correctAnswer = num1 * num2;
                 break;
         }
@@ -396,9 +443,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (userAnswer === correctAnswer) {
-            feedbackElement.textContent = 'CORRECT! +10 points';
+            // Reset hint system on correct answer
+            hintSystem.consecutiveWrong = 0;
+            hintSystem.showHint = false;
+
+            const points = 10 * gameSpeedMultiplier;
+            feedbackElement.textContent = `CORRECT! +${Math.round(points)} points`;
             feedbackElement.style.color = '#00ff00';
-            score += 10;
+            score += Math.round(points);
             try {
                 correctSound.play().catch(() => {});
             } catch (e) {}
@@ -414,12 +466,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 ));
             }
         } else {
-            feedbackElement.textContent = `WRONG! Answer was ${correctAnswer}`;
-            feedbackElement.style.color = '#ff0000';
+            // Enhanced wrong answer feedback with hint system
+            hintSystem.consecutiveWrong++;
+
+            if (hintSystem.consecutiveWrong >= 3) {
+                hintSystem.showHint = true;
+                hintSystem.hintText = generateHint(num1, num2, mathOperation, correctAnswer);
+                feedbackElement.textContent = `${encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)]}`;
+                feedbackElement.style.color = '#ffff00';
+            } else {
+                feedbackElement.textContent = `WRONG! Answer was ${correctAnswer}`;
+                feedbackElement.style.color = '#ff0000';
+            }
+
             try {
                 incorrectSound.play().catch(() => {});
             } catch (e) {}
-            screenShake.intensity = 5;
+            screenShake.intensity = Math.max(2, 5 - hintSystem.consecutiveWrong); // Reduced shake if struggling
         }
 
         gameAnswerElement.value = '';
@@ -488,9 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.stroke();
         }
 
-        // Progressive difficulty
+        // Progressive difficulty with game speed multiplier
         const difficultyMultiplier = 1 + (score / 500);
-        obstacleSpeed = baseObstacleSpeed * difficultyMultiplier;
+        obstacleSpeed = baseObstacleSpeed * difficultyMultiplier * gameSpeedMultiplier;
         maxNumber = Math.min(10 + Math.floor(score / 100), 20);
 
         // Update and draw dinosaur
@@ -515,8 +578,9 @@ document.addEventListener('DOMContentLoaded', () => {
             gracePeriod = true;
         } else {
             gracePeriod = false;
-            // Gentler obstacle spawning
-            const obstacleInterval = Math.max(120, 250 - (score / 5));
+            // Gentler obstacle spawning adjusted for game speed
+            const baseInterval = Math.max(120, 250 - (score / 5));
+            const obstacleInterval = baseInterval / gameSpeedMultiplier;
             if (frameCount % Math.floor(obstacleInterval) === 0) {
                 obstacles.push(new Obstacle());
             }
@@ -548,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Update and draw particles
+        // Update and draw particles (with mobile optimization)
         for (let i = particles.length - 1; i >= 0; i--) {
             if (!particles[i].update()) {
                 particles.splice(i, 1);
@@ -557,12 +621,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Limit particle count on mobile for performance
+        if (particles.length > particleLimit) {
+            particles.splice(0, particles.length - particleLimit);
+        }
+
         // Enhanced UI with better readability
         ctx.save();
 
-        // Dark background for UI text
+        // Dark background for UI text (expanded for more info)
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(5, 5, 250, 90);
+        ctx.fillRect(5, 5, 280, 130);
+
+        // Hint system display
+        if (hintSystem.showHint) {
+            ctx.fillStyle = 'rgba(0, 100, 200, 0.8)';
+            ctx.fillRect(canvas.width/2 - 150, 120, 300, 60);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '14px "Press Start 2P"';
+            ctx.fillText('💡 HINT:', canvas.width/2 - 140, 140);
+            ctx.font = '12px "Press Start 2P"';
+            ctx.fillText(hintSystem.hintText, canvas.width/2 - 140, 160);
+        }
 
         ctx.shadowColor = '#00ffaa';
         ctx.shadowBlur = 15;
@@ -570,7 +650,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.font = 'bold 20px "Press Start 2P"';
         ctx.fillText('SCORE: ' + score, 15, 30);
         ctx.fillText('HIGH: ' + highScore, 15, 55);
-        ctx.fillText('SPEED: ' + difficultyMultiplier.toFixed(1) + 'x', 15, 80);
+        ctx.fillText('DIFF: ' + difficultyMultiplier.toFixed(1) + 'x', 15, 80);
+
+        // Game speed indicator
+        ctx.fillStyle = '#ffaa00';
+        ctx.fillText('SPEED: ' + gameSpeedSettings[currentSpeedSetting].name, 15, 105);
 
         // Grace period indicator
         if (gracePeriod) {
@@ -598,6 +682,18 @@ document.addEventListener('DOMContentLoaded', () => {
         gamePaused = false;
         gameStartTime = performance.now();
         gracePeriod = true;
+
+        // Load saved preferences
+        const savedSpeed = localStorage.getItem('mathGameSpeed');
+        if (savedSpeed && gameSpeedSettings[savedSpeed]) {
+            currentSpeedSetting = savedSpeed;
+            gameSpeedMultiplier = gameSpeedSettings[currentSpeedSetting].multiplier;
+        }
+
+        // Reset hint system for new game
+        hintSystem.consecutiveWrong = 0;
+        hintSystem.showHint = false;
+        hintSystem.hintText = '';
 
         // Hide instructions and start button
         startButton.style.display = 'none';
@@ -676,14 +772,241 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 
+    function createPauseMenu() {
+        if (document.getElementById('pause-menu')) return;
+
+        const pauseMenu = document.createElement('div');
+        pauseMenu.id = 'pause-menu';
+        pauseMenu.innerHTML = `
+            <div class="pause-overlay">
+                <div class="pause-content">
+                    <h2>⏸️ GAME PAUSED</h2>
+                    <div class="speed-controls">
+                        <h3>🚀 Game Speed</h3>
+                        <div class="speed-buttons">
+                            <button class="speed-btn" data-speed="slow">Slow (0.6x)</button>
+                            <button class="speed-btn" data-speed="normal">Normal (1x)</button>
+                            <button class="speed-btn" data-speed="fast">Fast (1.4x)</button>
+                            <button class="speed-btn" data-speed="turbo">Turbo (1.8x)</button>
+                        </div>
+                        <p class="current-speed">Current: ${gameSpeedSettings[currentSpeedSetting].name}</p>
+                    </div>
+                    <div class="pause-actions">
+                        <button id="resume-btn" class="action-btn primary">▶️ Resume Game</button>
+                        <button id="restart-btn" class="action-btn secondary">🔄 Restart</button>
+                    </div>
+                    <div class="pause-extras">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="particles-toggle" checked>
+                            ✨ Particle Effects
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="hints-toggle" checked>
+                            💡 Help Hints
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="encouragement-toggle" checked>
+                            💪 Encouragement
+                        </label>
+                    </div>
+                    <p class="pause-tip">💡 Tip: Higher speeds give more points but are harder!</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(pauseMenu);
+
+        // Add styles
+        const style = document.createElement('style');
+        style.textContent = `
+            #pause-menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
+                font-family: 'Courier New', monospace;
+            }
+            .pause-overlay {
+                background: rgba(0, 0, 0, 0.9);
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .pause-content {
+                background: linear-gradient(45deg, #1a1a2e, #16213e);
+                border: 3px solid #00ffaa;
+                border-radius: 15px;
+                padding: 30px;
+                text-align: center;
+                box-shadow: 0 0 30px rgba(0, 255, 170, 0.5);
+                min-width: 400px;
+            }
+            .pause-content h2 {
+                color: #00ffaa;
+                margin-bottom: 25px;
+                font-size: 24px;
+                text-shadow: 0 0 10px rgba(0, 255, 170, 0.8);
+            }
+            .pause-content h3 {
+                color: #ffffff;
+                margin-bottom: 15px;
+                font-size: 18px;
+            }
+            .speed-buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .speed-btn {
+                background: linear-gradient(45deg, #0f3460, #16537e);
+                color: white;
+                border: 2px solid #00ffaa;
+                padding: 10px 15px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-family: inherit;
+            }
+            .speed-btn:hover {
+                background: linear-gradient(45deg, #16537e, #1e6091);
+                box-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
+                transform: translateY(-2px);
+            }
+            .speed-btn.active {
+                background: linear-gradient(45deg, #00cc88, #00ffaa);
+                color: #000;
+                box-shadow: 0 0 20px rgba(0, 255, 170, 0.6);
+            }
+            .current-speed {
+                color: #00ffaa;
+                margin-bottom: 20px;
+                font-weight: bold;
+            }
+            .pause-actions {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+            .action-btn {
+                padding: 12px 25px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-family: inherit;
+                font-size: 16px;
+                transition: all 0.3s ease;
+            }
+            .action-btn.primary {
+                background: linear-gradient(45deg, #00cc88, #00ffaa);
+                color: #000;
+            }
+            .action-btn.secondary {
+                background: linear-gradient(45deg, #cc6600, #ff8800);
+                color: white;
+            }
+            .action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+            .pause-tip {
+                color: #ffff88;
+                font-size: 12px;
+                margin: 0;
+            }
+            .pause-extras {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .toggle-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #ffffff;
+                cursor: pointer;
+                user-select: none;
+            }
+            .toggle-label input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Event listeners
+        const speedButtons = pauseMenu.querySelectorAll('.speed-btn');
+        speedButtons.forEach(btn => {
+            if (btn.dataset.speed === currentSpeedSetting) {
+                btn.classList.add('active');
+            }
+            btn.addEventListener('click', () => {
+                speedButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSpeedSetting = btn.dataset.speed;
+                gameSpeedMultiplier = gameSpeedSettings[currentSpeedSetting].multiplier;
+                pauseMenu.querySelector('.current-speed').textContent =
+                    `Current: ${gameSpeedSettings[currentSpeedSetting].name}`;
+
+                // Save preference
+                localStorage.setItem('mathGameSpeed', currentSpeedSetting);
+            });
+        });
+
+        pauseMenu.querySelector('#resume-btn').addEventListener('click', () => {
+            togglePause();
+        });
+
+        pauseMenu.querySelector('#restart-btn').addEventListener('click', () => {
+            removePauseMenu();
+            gameOver();
+            setTimeout(() => startGame(), 100);
+        });
+
+        // Settings toggles
+        pauseMenu.querySelector('#particles-toggle').addEventListener('change', (e) => {
+            const enableParticles = e.target.checked;
+            localStorage.setItem('mathGameParticles', enableParticles);
+            // Adjust particle limit based on setting and device
+            if (!enableParticles) {
+                particles = []; // Clear all particles
+                particleLimit = 0;
+            } else {
+                particleLimit = isMobile ? 50 : 200;
+            }
+        });
+
+        pauseMenu.querySelector('#hints-toggle').addEventListener('change', (e) => {
+            localStorage.setItem('mathGameHints', e.target.checked);
+        });
+
+        pauseMenu.querySelector('#encouragement-toggle').addEventListener('change', (e) => {
+            localStorage.setItem('mathGameEncouragement', e.target.checked);
+        });
+    }
+
+    function removePauseMenu() {
+        const pauseMenu = document.getElementById('pause-menu');
+        if (pauseMenu) {
+            pauseMenu.remove();
+        }
+    }
+
     function togglePause() {
         if (!gameRunning) return;
 
         gamePaused = !gamePaused;
         if (gamePaused) {
-            feedbackElement.textContent = '⏸️ PAUSED - Press P to continue';
-            feedbackElement.style.color = '#ffff00';
+            createPauseMenu();
+            feedbackElement.textContent = '';
         } else {
+            removePauseMenu();
             feedbackElement.textContent = '';
             gameAnswerElement.focus();
         }
@@ -709,10 +1032,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Mobile performance optimization
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    let isTouch = 'ontouchstart' in window;
+    let particleLimit = isMobile ? 50 : 200; // Reduce particles on mobile
+
+    // Virtual keyboard detection
+    let viewportHeight = window.innerHeight;
+    let keyboardOpen = false;
+
+    function detectKeyboard() {
+        const currentHeight = window.innerHeight;
+        const threshold = viewportHeight * 0.75;
+
+        if (currentHeight < threshold && !keyboardOpen) {
+            keyboardOpen = true;
+            document.body.classList.add('keyboard-open');
+            // Adjust game layout when keyboard opens
+            if (gameRunning) {
+                canvas.style.height = (canvas.offsetHeight * 0.6) + 'px';
+            }
+        } else if (currentHeight >= threshold && keyboardOpen) {
+            keyboardOpen = false;
+            document.body.classList.remove('keyboard-open');
+            // Restore game layout
+            resizeCanvas();
+        }
+    }
+
     // Initialize
     resizeCanvas();
     initStars();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        detectKeyboard();
+    });
+
+    // Mobile-specific event listeners
+    if (isTouch) {
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                resizeCanvas();
+                viewportHeight = window.innerHeight;
+            }, 100);
+        });
+
+        // Prevent zoom on input focus
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', (e) => {
+                e.target.style.fontSize = '16px';
+            });
+        });
+    }
 
     // Event listeners
     startButton.addEventListener('click', () => {
@@ -739,21 +1111,80 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Auto-focus answer input when typing
-    window.addEventListener('keydown', (e) => {
-        if (gameRunning && !gamePaused && e.key >= '0' && e.key <= '9') {
-            gameAnswerElement.focus();
-        }
-    });
+    // Auto-focus answer input when typing (desktop only)
+    if (!isTouch) {
+        window.addEventListener('keydown', (e) => {
+            if (gameRunning && !gamePaused && e.key >= '0' && e.key <= '9') {
+                gameAnswerElement.focus();
+            }
+        });
+    }
 
-    // Mobile touch controls
+    // Mobile-specific input handling
+    if (isTouch) {
+        gameAnswerElement.addEventListener('focus', () => {
+            // Small delay to ensure keyboard is open
+            setTimeout(() => {
+                detectKeyboard();
+                // Scroll input into view
+                gameAnswerElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 300);
+        });
+
+        gameAnswerElement.addEventListener('blur', () => {
+            setTimeout(detectKeyboard, 300);
+        });
+
+        // Improve touch responsiveness for input
+        gameAnswerElement.addEventListener('touchstart', (e) => {
+            e.stopPropagation(); // Prevent canvas touch handler
+        });
+
+        gameSubmitButton.addEventListener('touchstart', (e) => {
+            e.stopPropagation(); // Prevent canvas touch handler
+        });
+    }
+
+    // Enhanced mobile touch controls
+    let touchStartTime = 0;
+    let touchStartPos = { x: 0, y: 0 };
+
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (gameRunning && !gamePaused) {
-            if (gameAnswerElement.value.trim() !== '') {
-                checkAnswer();
-            } else {
-                dino.jump();
+        touchStartTime = Date.now();
+        const touch = e.touches[0];
+        touchStartPos.x = touch.clientX;
+        touchStartPos.y = touch.clientY;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const touchDuration = Date.now() - touchStartTime;
+        const touch = e.changedTouches[0];
+        const deltaX = Math.abs(touch.clientX - touchStartPos.x);
+        const deltaY = Math.abs(touch.clientY - touchStartPos.y);
+
+        // Only register tap if it's quick and doesn't move much (not a swipe)
+        if (touchDuration < 500 && deltaX < 30 && deltaY < 30) {
+            if (gameRunning && !gamePaused) {
+                if (gameAnswerElement.value.trim() !== '') {
+                    checkAnswer();
+                } else {
+                    dino.jump();
+                    // Visual feedback for touch
+                    for (let i = 0; i < (isMobile ? 5 : 10); i++) {
+                        particles.push(new Particle(
+                            touch.clientX - canvas.getBoundingClientRect().left,
+                            touch.clientY - canvas.getBoundingClientRect().top,
+                            '#00ffaa',
+                            Math.random() * 3 + 1,
+                            { x: (Math.random() - 0.5) * 6, y: -Math.random() * 4 }
+                        ));
+                    }
+                }
             }
         }
     }, { passive: false });
