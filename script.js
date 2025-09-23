@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Game variables
     let gameRunning = false;
     let gamePaused = false;
+    let gameStartTime = 0;
+    let gracePeriod = true;
     let score = 0;
     let highScore = parseInt(localStorage.getItem('mathInvadersHighScore')) || 0;
     let obstacles = [];
@@ -504,11 +506,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dino.draw();
 
-        // Generate obstacles with increased frequency
+        // Generate obstacles with grace period for new players
         frameCount++;
-        const obstacleInterval = Math.max(80, 180 - (score / 8));
-        if (frameCount % Math.floor(obstacleInterval) === 0) {
-            obstacles.push(new Obstacle());
+        const gameTime = (currentTime - gameStartTime) / 1000;
+
+        // Grace period - no obstacles for first 5 seconds
+        if (gameTime < 5) {
+            gracePeriod = true;
+        } else {
+            gracePeriod = false;
+            // Gentler obstacle spawning
+            const obstacleInterval = Math.max(120, 250 - (score / 5));
+            if (frameCount % Math.floor(obstacleInterval) === 0) {
+                obstacles.push(new Obstacle());
+            }
         }
 
         // Update and draw obstacles
@@ -546,19 +557,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Enhanced UI with glow effects
+        // Enhanced UI with better readability
         ctx.save();
+
+        // Dark background for UI text
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(5, 5, 250, 90);
+
         ctx.shadowColor = '#00ffaa';
         ctx.shadowBlur = 15;
         ctx.fillStyle = '#00ffaa';
-        ctx.font = 'bold 18px "Press Start 2P"';
+        ctx.font = 'bold 20px "Press Start 2P"';
         ctx.fillText('SCORE: ' + score, 15, 30);
         ctx.fillText('HIGH: ' + highScore, 15, 55);
         ctx.fillText('SPEED: ' + difficultyMultiplier.toFixed(1) + 'x', 15, 80);
 
-        // Pause instruction
+        // Grace period indicator
+        if (gracePeriod) {
+            ctx.fillStyle = '#ffff00';
+            ctx.font = '16px "Press Start 2P"';
+            ctx.fillText('GRACE PERIOD: ' + Math.ceil(5 - gameTime) + 's', canvas.width/2 - 120, 30);
+        }
+
+        // Pause instruction with background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(canvas.width - 200, 5, 190, 25);
+        ctx.fillStyle = '#00ffaa';
         ctx.font = '12px "Press Start 2P"';
-        ctx.fillText('Press P to pause', canvas.width - 180, 25);
+        ctx.fillText('Press P to pause', canvas.width - 190, 22);
         ctx.restore();
 
         ctx.restore(); // Restore camera shake transformation
@@ -570,8 +596,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Starting game...');
         gameRunning = true;
         gamePaused = false;
+        gameStartTime = performance.now();
+        gracePeriod = true;
+
+        // Hide instructions and start button
         startButton.style.display = 'none';
+        document.getElementById('instructions').style.display = 'none';
         gameProblemContainer.style.display = 'block';
+
         score = 0;
         obstacles = [];
         particles = [];
@@ -580,35 +612,45 @@ document.addEventListener('DOMContentLoaded', () => {
         screenShake = { x: 0, y: 0, intensity: 0 };
         dino.reset();
 
-        baseObstacleSpeed = 3;
-        operations = ['+', '-', '*'];
-        maxNumber = 10;
+        // Gentler starting difficulty
+        baseObstacleSpeed = 2;
+        operations = ['+'];
+        maxNumber = 5;
         obstacleSpeed = baseObstacleSpeed;
 
         initStars();
         generateProblem();
         gameAnswerElement.focus();
+
+        // Show welcome message
+        feedbackElement.textContent = 'Get ready! Grace period active...';
+        feedbackElement.style.color = '#ffff00';
+        setTimeout(() => {
+            if (gameRunning) feedbackElement.textContent = '';
+        }, 3000);
+
         requestAnimationFrame(gameLoop);
     }
 
     function gameOver() {
         gameRunning = false;
+        gracePeriod = false;
 
-        // Epic explosion effect
-        for (let i = 0; i < 50; i++) {
+        // Reduced explosion effect for accessibility
+        for (let i = 0; i < 20; i++) {
             particles.push(new Particle(
-                canvas.width/2 + (Math.random() - 0.5) * 200,
-                canvas.height/2 + (Math.random() - 0.5) * 200,
+                canvas.width/2 + (Math.random() - 0.5) * 100,
+                canvas.height/2 + (Math.random() - 0.5) * 100,
                 Math.random() < 0.5 ? '#ff0000' : '#ffaa00',
-                Math.random() * 8 + 4,
+                Math.random() * 6 + 2,
                 {
-                    x: (Math.random() - 0.5) * 20,
-                    y: (Math.random() - 0.5) * 20
+                    x: (Math.random() - 0.5) * 10,
+                    y: (Math.random() - 0.5) * 10
                 }
             ));
         }
 
-        screenShake.intensity = 20;
+        screenShake.intensity = 10; // Reduced shake
 
         if (score > highScore) {
             highScore = score;
@@ -620,8 +662,18 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackElement.style.color = '#ff0000';
         }
 
+        // Show instructions again
         startButton.style.display = 'block';
+        document.getElementById('instructions').style.display = 'block';
         gameProblemContainer.style.display = 'none';
+
+        // Progressive difficulty after first game
+        setTimeout(() => {
+            if (!gameRunning) {
+                operations = ['+', '-', '*'];
+                maxNumber = 10;
+            }
+        }, 1000);
     }
 
     function togglePause() {
@@ -693,4 +745,21 @@ document.addEventListener('DOMContentLoaded', () => {
             gameAnswerElement.focus();
         }
     });
+
+    // Mobile touch controls
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (gameRunning && !gamePaused) {
+            if (gameAnswerElement.value.trim() !== '') {
+                checkAnswer();
+            } else {
+                dino.jump();
+            }
+        }
+    }, { passive: false });
+
+    // Prevent zoom on mobile
+    document.addEventListener('touchmove', (e) => {
+        if (e.scale !== 1) e.preventDefault();
+    }, { passive: false });
 });

@@ -267,6 +267,33 @@ main {
         inset 0 0 30px rgba(255, 255, 255, 0.15);
 }
 
+#instructions {
+    background: rgba(0, 34, 68, 0.8);
+    border: 2px solid rgba(0, 255, 170, 0.5);
+    border-radius: 10px;
+    padding: 1.5em;
+    margin: 1em auto;
+    max-width: 500px;
+    box-shadow:
+        inset 0 0 20px rgba(0, 255, 170, 0.1),
+        0 0 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+#instructions p {
+    margin: 0.5em 0;
+    font-size: 0.8em;
+    line-height: 1.4;
+    color: #00ddaa;
+    text-shadow: 0 0 5px #00ddaa;
+}
+
+#instructions strong {
+    color: #00ffaa;
+    font-size: 1.1em;
+    text-shadow: 0 0 10px #00ffaa;
+}
+
 #game-problem-container {
     display: none;
     margin-top: 1.5em;
@@ -281,7 +308,7 @@ main {
 }
 
 #game-problem {
-    font-size: 1.8em;
+    font-size: 2.2em;
     color: #00ffaa;
     text-shadow:
         0 0 15px #00ffaa,
@@ -289,6 +316,10 @@ main {
     margin-bottom: 1.5em;
     animation: problemPulse 2s ease-in-out infinite alternate;
     transform: perspective(300px) rotateY(-2deg);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5em;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 255, 170, 0.5);
 }
 
 @keyframes problemPulse {
@@ -416,32 +447,66 @@ footer {
     backdrop-filter: blur(10px);
 }
 
-/* Responsive design for mobile */
+/* Enhanced mobile responsiveness */
 @media (max-width: 768px) {
     h1 {
-        font-size: 2em;
+        font-size: 1.8em;
+        letter-spacing: 1px;
+    }
+
+    #start-button, #game-submit {
+        font-size: 1.1em;
+        padding: 0.8em 1.5em;
+        margin: 0.5em;
+    }
+
+    #game-answer {
+        font-size: 1.4em;
+        width: 180px;
+        padding: 1em;
+    }
+
+    main {
+        padding: 0.5em;
+    }
+
+    #game-problem {
+        font-size: 1.8em;
+        padding: 0.8em;
+    }
+
+    #game-problem-container {
+        padding: 1em;
+    }
+
+    #instructions {
+        padding: 1em;
+        margin: 0.5em;
+    }
+
+    #instructions p {
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+
+    canvas {
+        touch-action: none;
+    }
+}
+
+@media (max-width: 480px) {
+    #game-problem {
+        font-size: 1.6em;
+    }
+
+    #game-answer {
+        width: 150px;
+        font-size: 1.2em;
     }
 
     #start-button, #game-submit {
         font-size: 1em;
-        padding: 0.6em 1.2em;
-    }
-
-    #game-answer {
-        font-size: 1.1em;
-        width: 140px;
-    }
-
-    main {
-        padding: 1em;
-    }
-
-    #game-problem {
-        font-size: 1.4em;
-    }
-
-    #game-problem-container {
-        padding: 1.5em;
+        padding: 0.7em 1.2em;
     }
 }
 
